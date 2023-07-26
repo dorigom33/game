@@ -12,5 +12,6 @@
 생년월일 : ${userInfo.uiBirth}<br>
 소개 : ${userInfo.uiDesc}<br>
 가입일 : ${userInfo.credat}<br>
+으아아아<br>
 </body>
 </html>
