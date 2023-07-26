@@ -12,7 +12,6 @@
 생년월일 : ${userInfo.uiBirth}<br>
 소개 : ${userInfo.uiDesc}<br>
 가입일 : ${userInfo.credat}<br>
-으아아아<br>
-아으아아악<br>
+<a href="/user-info/update">수정</a>
 </body>
 </html>
