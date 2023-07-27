@@ -138,6 +138,37 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 		return 0;
 	}
 	
+	@Override
+	public Map<String, String> selectUserInfoById(String uiId) {
+		String sql = "SELECT UI_NUM, UI_NAME, UI_ID, UI_PWD, UI_IMG_PATH, UI_DESC, UI_BIRTH, CREDAT, CRETIM, LMODAT, LMOTIM, ACTIVE FROM USER_INFO WHERE 1=1 AND UI_ID=?";
+		try (Connection con = DBCon.getCon()) {
+			try (PreparedStatement ps = con.prepareStatement(sql)) {
+				ps.setString(1, uiId);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Map<String, String> userInfoMap = new HashMap<>();
+						userInfoMap.put("uiNum", rs.getString("UI_NUM"));
+						userInfoMap.put("uiName", rs.getString("UI_NAME"));
+						userInfoMap.put("uiId", rs.getString("UI_ID"));
+						userInfoMap.put("uiPwd", rs.getString("UI_PWD"));
+						userInfoMap.put("uiImgPath", rs.getString("UI_IMG_PATH"));
+						userInfoMap.put("uiDesc", rs.getString("UI_DESC"));
+						userInfoMap.put("uiBirth", rs.getString("UI_BIRTH"));
+						userInfoMap.put("credat", rs.getString("CREDAT"));
+						userInfoMap.put("cretim", rs.getString("CRETIM"));
+						userInfoMap.put("lmodat", rs.getString("LMODAT"));
+						userInfoMap.put("lmotim", rs.getString("LMOTIM"));
+						userInfoMap.put("active", rs.getString("ACTIVE"));
+						return userInfoMap;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		UserInfoDAO uiDao = new UserInfoDAOImpl();
 		System.out.println(uiDao.selectUserInfoList(null));
@@ -170,37 +201,6 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 		*/
 		
 
-	}
-
-	@Override
-	public Map<String, String> selectUserInfoById(String uiId) {
-		String sql = "SELECT UI_NUM, UI_NAME, UI_ID, UI_PWD, UI_IMG_PATH, UI_DESC, UI_BIRTH, CREDAT, CRETIM, LMODAT, LMOTIM, ACTIVE FROM USER_INFO WHERE 1=1 AND UI_ID=?";
-		try (Connection con = DBCon.getCon()) {
-			try (PreparedStatement ps = con.prepareStatement(sql)) {
-				ps.setString(1, uiId);
-				try (ResultSet rs = ps.executeQuery()) {
-					while (rs.next()) {
-						Map<String, String> userInfoMap = new HashMap<>();
-						userInfoMap.put("uiNum", rs.getString("UI_NUM"));
-						userInfoMap.put("uiName", rs.getString("UI_NAME"));
-						userInfoMap.put("uiId", rs.getString("UI_ID"));
-						userInfoMap.put("uiPwd", rs.getString("UI_PWD"));
-						userInfoMap.put("uiImgPath", rs.getString("UI_IMG_PATH"));
-						userInfoMap.put("uiDesc", rs.getString("UI_DESC"));
-						userInfoMap.put("uiBirth", rs.getString("UI_BIRTH"));
-						userInfoMap.put("credat", rs.getString("CREDAT"));
-						userInfoMap.put("cretim", rs.getString("CRETIM"));
-						userInfoMap.put("lmodat", rs.getString("LMODAT"));
-						userInfoMap.put("lmotim", rs.getString("LMOTIM"));
-						userInfoMap.put("active", rs.getString("ACTIVE"));
-						return userInfoMap;
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 }
