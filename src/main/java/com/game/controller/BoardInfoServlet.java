@@ -42,9 +42,8 @@ public class BoardInfoServlet extends HttpServlet {
 			request.setAttribute("boardInfoList", boardInfoList);
 		}else if("view".equals(cmd) || "update".equals(cmd)) {
 			String biNum = request.getParameter("biNum");
-			Map<String, String> boardInfo = boardInfoService.selectBoardInfo(biNum);
-			request.setAttribute("boardInfo", boardInfo);
-			return;
+			Map<String, String> board = boardInfoService.selectBoardInfo(biNum);
+			request.setAttribute("board", board);
 		}
 		CommonView.forward(request, response);
 	}
@@ -52,13 +51,54 @@ public class BoardInfoServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		String cmd = CommonView.getCmd(request);
-		
-		Map<String, String> boardInfo = new HashMap<>();
-		
 		if(!isLogin(request, response)) {
 			return;
 		}
+		String cmd = CommonView.getCmd(request);
+		HttpSession session = request.getSession();
+		Map<String, String> user = (Map<String, String>)session.getAttribute("user");
+		if("insert".equals(cmd)) {
+			
+			String biTitle = request.getParameter("biTitle");
+			String biContent = request.getParameter("biContent");
+			Map<String,String> board = new HashMap<>();
+			board.put("biTitle", biTitle);
+			board.put("biContent", biContent);
+			board.put("uiNum", user.get("uiNum"));
+			int result = boardInfoService.insertBoardInfo(board);
+			request.setAttribute("msg", "등록실패....");
+			request.setAttribute("url", "/board-info/insert");
+			if(result==1) {
+				request.setAttribute("msg", "등록성공!");
+				request.setAttribute("url", "/board-info/list");	
+			}
+		}else if("update".equals(cmd)) {
+			String biNum = request.getParameter("biNum");
+			String biTitle = request.getParameter("biTitle");
+			String biContent = request.getParameter("biContent");
+			Map<String,String> board = new HashMap<>();
+			board.put("biNum", biNum);
+			board.put("biTitle", biTitle);
+			board.put("biContent", biContent);
+			board.put("uiNum", user.get("uiNum"));
+			int result = boardInfoService.updateBoardInfo(board);
+			request.setAttribute("msg", "수정실패....");
+			request.setAttribute("url", "/board-info/update?biNum=" + biNum);
+			if(result==1) {
+				request.setAttribute("msg", "수정성공!");
+				request.setAttribute("url", "/board-info/list");	
+			}
+		}else if("delete".equals(cmd)) {
+			String biNum = request.getParameter("biNum");
+			int result = boardInfoService.deleteBoardInfo(biNum);
+			request.setAttribute("msg", "삭제실패....");
+			request.setAttribute("url", "/board-info/view?biNum=" + biNum);
+			if(result==1) {
+				request.setAttribute("msg", "삭제성공!");
+				request.setAttribute("url", "/board-info/list");	
+			}
+		}
+		CommonView.forwardMessage(request, response);
 	}
 
 }

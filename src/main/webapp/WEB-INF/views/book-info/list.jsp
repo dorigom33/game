@@ -10,7 +10,7 @@
 <body>
 <h3>도서 리스트</h3>
 <c:forEach items="${bookInfoList}" var="bookInfo">
-	${bookInfo.biNum},${bookInfo.biTitle},<a href="book-info/view?biNum=${bookInfo.biNum}">${bookInfo.biTitle}</a><br>
+	${bookInfo.biNum},<a href="book-info/view?biNum=${bookInfo.biNum}">${bookInfo.biTitle}</a><br>
 </c:forEach>
 <a href="book-info/insert">등록</a>
 </body>

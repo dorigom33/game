@@ -7,7 +7,7 @@
 </head>
 <body>
 	<h3>도서등록</h3>
-	<form method="POST" action="/book-info/insert">
+	<form method="POST" action="insert">
 		<input type="text" name="biTitle" placeholder="제목"><br> 
 		<input type="text" name="biAuth" placeholder="저자"><br>
 		<button>등록</button>
