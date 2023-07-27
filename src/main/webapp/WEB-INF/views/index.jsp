@@ -8,6 +8,8 @@
 </head>
 <body>
 	index.jsp
+<p>내 세션 아이디 : 	<%=session.getId() %></p>
+<p>내 세션 타임아웃 : <%=session.getMaxInactiveInterval() %></p>
 	<c:if test="${user!=null}">
 ${user.uiName}님 안녕하세요.
 <button onclick="location.href='/user-info/logout'">로그아웃</button>
