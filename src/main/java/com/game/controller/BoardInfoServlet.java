@@ -20,57 +20,63 @@ import com.game.service.impl.BoardInfoServiceImpl;
 @WebServlet("/board-info/*")
 public class BoardInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BoardInfoService boardInfoService = new BoardInfoServiceImpl();
-	
-    private boolean isLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private BoardInfoService biService = new BoardInfoServiceImpl();
+
+	private boolean isLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute("user") == null) {
-			request.setAttribute("msg",	"로그인이 필요한 화면입니다.");
+		if(session.getAttribute("user")==null) {
+			request.setAttribute("msg", "로그인이 필요한 화면 입니다.");
 			request.setAttribute("url", "/user-info/login");
 			CommonView.forwardMessage(request, response);
 			return false;
 		}
-    	return true;
-    }
+		return true;
+	}
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(!isLogin(request, response)) {
+		if(!isLogin(request,response)) {
 			return;
 		}
 		String cmd = CommonView.getCmd(request);
 		if("list".equals(cmd)) {
-			List<Map<String,String>> boardInfoList = boardInfoService.selectBoardInfoList(null);
-			request.setAttribute("boardInfoList", boardInfoList);
+			Map<String,String> param = null;
+			if(request.getParameter("searchType")!=null) {
+				param = new HashMap<>();
+				String key = request.getParameter("searchType");
+				String value = request.getParameter("searchStr");
+				param.put("key", key);
+				param.put("value", value);
+			}
+			List<Map<String, String>> list = biService.selectBoardInfoList(param);	
+			request.setAttribute("biList", list);
 		}else if("view".equals(cmd) || "update".equals(cmd)) {
 			String biNum = request.getParameter("biNum");
-			Map<String, String> board = boardInfoService.selectBoardInfo(biNum);
+			Map<String,String> board = biService.selectBoardInfo(biNum);
 			request.setAttribute("board", board);
 		}
 		CommonView.forward(request, response);
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		if(!isLogin(request, response)) {
+		if(!isLogin(request,response)) {
 			return;
 		}
 		String cmd = CommonView.getCmd(request);
 		HttpSession session = request.getSession();
-		Map<String, String> user = (Map<String, String>)session.getAttribute("user");
+		Map<String,String> user = (Map<String,String>)session.getAttribute("user");
 		if("insert".equals(cmd)) {
-			
 			String biTitle = request.getParameter("biTitle");
 			String biContent = request.getParameter("biContent");
 			Map<String,String> board = new HashMap<>();
 			board.put("biTitle", biTitle);
 			board.put("biContent", biContent);
 			board.put("uiNum", user.get("uiNum"));
-			int result = boardInfoService.insertBoardInfo(board);
-			request.setAttribute("msg", "등록실패....");
+			int result = biService.insertBoardInfo(board);
+			request.setAttribute("msg", "등록이 안됬습니다.");
 			request.setAttribute("url", "/board-info/insert");
 			if(result==1) {
-				request.setAttribute("msg", "등록성공!");
-				request.setAttribute("url", "/board-info/list");	
+				request.setAttribute("msg", "등록이 되었습니다.");
+				request.setAttribute("url", "/board-info/list");
 			}
 		}else if("update".equals(cmd)) {
 			String biNum = request.getParameter("biNum");
@@ -81,24 +87,30 @@ public class BoardInfoServlet extends HttpServlet {
 			board.put("biTitle", biTitle);
 			board.put("biContent", biContent);
 			board.put("uiNum", user.get("uiNum"));
-			int result = boardInfoService.updateBoardInfo(board);
-			request.setAttribute("msg", "수정실패....");
+			int result = biService.updateBoardInfo(board);
+			request.setAttribute("msg", "수정이 안됬습니다.");
 			request.setAttribute("url", "/board-info/update?biNum=" + biNum);
 			if(result==1) {
-				request.setAttribute("msg", "수정성공!");
-				request.setAttribute("url", "/board-info/list");	
+				request.setAttribute("msg", "수정이 되었습니다.");
+				request.setAttribute("url", "/board-info/list");
 			}
 		}else if("delete".equals(cmd)) {
 			String biNum = request.getParameter("biNum");
-			int result = boardInfoService.deleteBoardInfo(biNum);
-			request.setAttribute("msg", "삭제실패....");
+			int result = biService.deleteBoardInfo(biNum);
+			request.setAttribute("msg", "삭제가 안됬습니다.");
 			request.setAttribute("url", "/board-info/view?biNum=" + biNum);
 			if(result==1) {
-				request.setAttribute("msg", "삭제성공!");
-				request.setAttribute("url", "/board-info/list");	
+				request.setAttribute("msg", "삭제가 되었습니다.");
+				request.setAttribute("url", "/board-info/list");
 			}
 		}
 		CommonView.forwardMessage(request, response);
 	}
 
 }
+
+
+
+
+
+
