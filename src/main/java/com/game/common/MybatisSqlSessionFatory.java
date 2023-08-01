@@ -5,12 +5,15 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.plaf.synth.SynthScrollPaneUI;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.game.mapper.BoardInfoMapper;
+import com.game.vo.BoardInfoVO;
 
 public class MybatisSqlSessionFatory {
 
@@ -32,10 +35,29 @@ public class MybatisSqlSessionFatory {
 	}
 	
 	public static void main(String[] args) {
+		try {
 		SqlSessionFactory ssf = getSqlSessionFactory();
-		SqlSession session = ssf.openSession();
+		SqlSession session = ssf.openSession(true);
 		BoardInfoMapper biMapper = session.getMapper(BoardInfoMapper.class);
-		List<Map<String, String>> list = biMapper.selectBoardInfoList();
-		System.out.println(list);
+		BoardInfoVO bi = new BoardInfoVO();
+		bi.setBiNum(6);
+		bi.setBiTitle("Mapper test");
+		bi.setBiContent("처음으로 하는 마이바티스 인서트");
+		bi.setUiNum(4);
+		int result = biMapper.insertBoardInfo(bi);
+		System.out.println("inset result : " + result);
+		bi = biMapper.selectBoardInfo(bi);
+		bi.setBiTitle("마이바티스 업데이트 테스트");
+		result = biMapper.updateBoardInfo(bi);
+		System.out.println("update result" + result);
+		
+		List<BoardInfoVO> list = biMapper.selectBoardInfoList(bi);
+		for(BoardInfoVO board : list) {
+			System.out.println(board);
+		}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

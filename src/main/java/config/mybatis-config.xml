@@ -6,7 +6,9 @@
 		<typeAlias type="kr.or.iei.student.model.vo.Student" alias="student"/>
 	</typeAliases>
 	-->
-	
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
 	<environments default="development">
 	
 		<!-- environment id를 구분하여 연결할 DB를 여려개 구성할 수 도 있음 -->
