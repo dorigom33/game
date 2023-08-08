@@ -1,6 +1,9 @@
 package com.game.vo;
 
+import java.util.List;
+
 public class BoardInfoVO {
+
 	private int biNum;
 	private String biTitle;
 	private String biContent;
@@ -10,7 +13,28 @@ public class BoardInfoVO {
 	private String lmodat;
 	private String lmotim;
 	private String active;
+	private String uiName;
+	private String searchStr;
+	private String searchType;
 	
+	public String getSearchStr() {
+		return searchStr;
+	}
+	public void setSearchStr(String searchStr) {
+		this.searchStr = searchStr;
+	}
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+	public String getUiName() {
+		return uiName;
+	}
+	public void setUiName(String uiName) {
+		this.uiName = uiName;
+	}
 	public int getBiNum() {
 		return biNum;
 	}
@@ -70,8 +94,7 @@ public class BoardInfoVO {
 	public String toString() {
 		return "BoardInfoVO [biNum=" + biNum + ", biTitle=" + biTitle + ", biContent=" + biContent + ", uiNum=" + uiNum
 				+ ", credat=" + credat + ", cretim=" + cretim + ", lmodat=" + lmodat + ", lmotim=" + lmotim
-				+ ", active=" + active + "]";
+				+ ", active=" + active + ", uiName=" + uiName + ", searchStr=" + searchStr + ", searchType="
+				+ searchType + "]";
 	}
-
-
 }

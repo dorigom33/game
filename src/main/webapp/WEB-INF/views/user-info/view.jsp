@@ -7,8 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form action="/user-info/delete" method="POST">
-<input type="hidden" name="uiNum" value="${userInfo.uiNum}">
 <h3>유저 상세화면</h3>
 이름 : ${userInfo.uiName}<br>
 생년월일 : ${userInfo.uiBirth}<br>
@@ -16,6 +14,5 @@
 가입일 : ${userInfo.credat}<br>
 <button type="button" onclick="location.href='/user-info/update?uiNum=${userInfo.uiNum}'">수정</button>
 <button>삭제</button>
-</form>
 </body>
 </html>

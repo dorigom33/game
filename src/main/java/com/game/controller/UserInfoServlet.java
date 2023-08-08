@@ -1,8 +1,8 @@
 package com.game.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -15,31 +15,25 @@ import javax.servlet.http.HttpSession;
 import com.game.common.CommonView;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
+import com.google.gson.Gson;
 
 
 @WebServlet("/user-info/*")
 public class UserInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserInfoService uiService = new UserInfoServiceImpl();
+	private Gson gson = new Gson();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = CommonView.getCmd(request);
+		String json = "";
 		if("list".equals(cmd)) {
-			List<Map<String,String>> userInfoList = uiService.selectUserInfoList(null);
-			request.setAttribute("userInfoList", userInfoList);
+			json = gson.toJson(uiService.selectUserInfoList(null));
 		}else if("view".equals(cmd) || "update".equals(cmd)) {
-			String uiNum = request.getParameter("uiNum");
-			Map<String,String> userInfo = uiService.selectUserInfo(uiNum);
-			request.setAttribute("userInfo", userInfo);
-		}else if("logout".equals(cmd)) {
-			HttpSession session = request.getSession();
-			session.invalidate();
-			request.setAttribute("msg", "로그아웃 성공");
-			request.setAttribute("url", "/user-info/login");
-			CommonView.forwardMessage(request,response);
-			return;
 		}
-		CommonView.forward(request, response);
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(json);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -84,7 +78,7 @@ public class UserInfoServlet extends HttpServlet {
 			}
 		}else if("login".equals(cmd)) {
 			request.setAttribute("msg", "아이디나 비밀번호를 확인하세요");
-			request.setAttribute("url","/user-info/login");
+			request.setAttribute("url", "/user-info/login");
 			HttpSession session = request.getSession();
 			String uiId = request.getParameter("uiId");
 			String uiPwd = request.getParameter("uiPwd");
@@ -92,8 +86,9 @@ public class UserInfoServlet extends HttpServlet {
 			if(ui!=null) {
 				String dbUiPwd = ui.get("uiPwd");
 				if(uiPwd.equals(dbUiPwd)) {
-					request.setAttribute("msg", "로그인 성공!");
-					session.setAttribute("url", "/");
+					request.setAttribute("msg", "로그인이 성공하였습니다.");
+					request.setAttribute("url", "/");
+					
 					session.setAttribute("user", ui);
 				}
 			}

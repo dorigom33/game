@@ -1,13 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>메시지</title>
+<title>Insert title here</title>
 </head>
 <body>
-	<h3>결과</h3>
-	<div>${msg}</div>
-	<button onclick="location.href='${url}'">확인</button>
+<h3>결과</h3>
+<div>
+	${msg}
+</div>
+<button onclick="location.href='${url}'">확인</button>
 </body>
 </html>

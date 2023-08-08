@@ -11,34 +11,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.game.common.CommonView;
-import com.game.service.BoardInfoService;
-import com.game.service.impl.BoardInfoServiceImpl;
-import com.game.vo.BoardInfoVO;
+import com.game.service.GameInfoService;
+import com.game.service.impl.GameInfoServiceImpl;
+import com.game.vo.GameInfoVO;
 import com.google.gson.Gson;
 
-@WebServlet("/json/*")
-public class JsonServlet extends HttpServlet{
+
+@WebServlet("/game-info/*")
+public class GameInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static Gson gson = new Gson();
-	private BoardInfoService biService = new BoardInfoServiceImpl();
-	
+    private GameInfoService giService = new GameInfoServiceImpl();
+    private Gson gson = new Gson();
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String json = "";
 		String cmd = CommonView.getCmd(request);
+		String json = "";
 		if("list".equals(cmd)) {
-			BoardInfoVO board = new BoardInfoVO();
-			board.setSearchStr(request.getParameter("searchStr"));
-			board.setSearchType(request.getParameter("searchType"));
-			json = gson.toJson(biService.selectBoardInfoList(board));
-		}else if("one".equals(cmd)) {
-			String biNum = request.getParameter("biNum");
-			json = gson.toJson(biService.selectBoardInfo(biNum));
+			List<GameInfoVO> list = giService.selectGameInfoList(null);
+			json = gson.toJson(list);
 		}
-		response.setContentType("text/html;charset=UTF-8");
+		response.setContentType("application/json;charset=UTF=8");
 		PrintWriter out = response.getWriter();
 		out.print(json);
 	}
+
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		doGet(request, response);
 	}
+
 }

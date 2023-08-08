@@ -172,14 +172,8 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 	}
 
 	public static void main(String[] args) {
-		BoardInfoDAO biDAO = new BoardInfoDAOImpl();
-		Map<String, String> biMock = new HashMap<>();
-		biMock.put("biTitle", "test");
-		biMock.put("biContent", "test");
-		biMock.put("uiNum", "2");
-		int result = biDAO.insertBoardInfo(biMock);
-		System.out.println("결과 : " + result);
-		System.out.println(biDAO.selectBoardInfoList(null));
-		System.out.println(biDAO.selectBoardInfo("3"));
+		int[] biNums = new int[] {3,4};
+		String biTitles[] = {"test","test"};
+		String biContents[] = {"우리나라", "좋은나라"};
 	}
 }
