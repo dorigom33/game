@@ -30,7 +30,7 @@
 			</tbody>
 			<tr>
 				<td colspan="4" align="right">
-					<button type="button" class="btn btn-primary" onclick="goPage('/board-info/insert')">등록</button>
+					<button type="button" class="btn btn-primary" onclick="goPage('/views/user-info/insert')">등록</button>
 				</td>
 			</tr>
 		</table>

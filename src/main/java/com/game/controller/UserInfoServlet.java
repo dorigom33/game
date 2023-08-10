@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import com.game.common.CommonView;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 @WebServlet("/user-info/*")
@@ -36,46 +38,48 @@ public class UserInfoServlet extends HttpServlet {
 		out.print(json);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		String cmd = CommonView.getCmd(request);
-		
-		Map<String,String> userInfo = new HashMap<>();
-		userInfo.put("uiId", request.getParameter("uiId"));
-		userInfo.put("uiName", request.getParameter("uiName"));
-		userInfo.put("uiPwd", request.getParameter("uiPwd"));
-		userInfo.put("uiDesc", request.getParameter("uiDesc"));
-		if(request.getParameter("uiBirth")!=null) {
-			userInfo.put("uiBirth", request.getParameter("uiBirth").replace("-", ""));
-		}
-		
-		if("insert".equals(cmd)) {
-			int result = uiService.insertUserInfo(userInfo);
-			request.setAttribute("msg", "유저 등록 성공");
-			request.setAttribute("url", "/user-info/login");
-			if(result!=1) {
-				request.setAttribute("msg", "유저 등록 실패");
-				request.setAttribute("url", "/user-info/insert");
-			}
-		}else if("update".equals(cmd)) {
-			String uiNum = request.getParameter("uiNum");
-			userInfo.put("uiNum", uiNum);
-			int result = uiService.updateUserInfo(userInfo);
-			request.setAttribute("msg", "유저 수정 성공");
-			request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
-			if(result!=1) {
-				request.setAttribute("msg", "유저 수정 실패");
-				request.setAttribute("url", "/user-info/update?uiNum=" + uiNum);
-			}
-		}else if("delete".equals(cmd)) {
-			String uiNum = request.getParameter("uiNum");
-			int result = uiService.deleteUserInfo(uiNum);
-			request.setAttribute("msg", "유저 삭제 성공");
-			request.setAttribute("url", "/user-info/list");
-			if(result!=1) {
-				request.setAttribute("msg", "유저 삭제 실패");
-				request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
-			}
+	 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	        request.setCharacterEncoding("UTF-8");
+
+	        // Read JSON data from the request
+	        BufferedReader br = request.getReader();
+	        StringBuffer sb = new StringBuffer();
+	        String str;
+	        while ((str = br.readLine()) != null) {
+	            sb.append(str);
+	        }
+
+	        // Convert JSON data to a Map
+	        Map<String, String> userInfo = gson.fromJson(sb.toString(), new TypeToken<Map<String, String>>() {}.getType());
+
+	        // Process the userInfo data as needed
+	        String cmd = CommonView.getCmd(request);
+	        if ("insert".equals(cmd)) {
+	            int result = uiService.insertUserInfo(userInfo);
+	            request.setAttribute("msg", "유저 등록 성공");
+	            request.setAttribute("url", "/user-info/login");
+	            if (result != 1) {
+	                request.setAttribute("msg", "유저 등록 실패");
+	                request.setAttribute("url", "/user-info/insert");
+	            }
+	        } else if ("update".equals(cmd)) {
+	            String uiNum = userInfo.get("uiNum");
+	            int result = uiService.updateUserInfo(userInfo);
+	            request.setAttribute("msg", "유저 수정 성공");
+	            request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
+	            if (result != 1) {
+	                request.setAttribute("msg", "유저 수정 실패");
+	                request.setAttribute("url", "/user-info/update?uiNum=" + uiNum);
+	            }
+	        } else if ("delete".equals(cmd)) {
+	            String uiNum = userInfo.get("uiNum");
+	            int result = uiService.deleteUserInfo(uiNum);
+	            request.setAttribute("msg", "유저 삭제 성공");
+	            request.setAttribute("url", "/user-info/list");
+	            if (result != 1) {
+	                request.setAttribute("msg", "유저 삭제 실패");
+	                request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
+	            }
 		}else if("login".equals(cmd)) {
 			request.setAttribute("msg", "아이디나 비밀번호를 확인하세요");
 			request.setAttribute("url", "/user-info/login");
